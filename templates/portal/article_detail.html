@@ -14,7 +14,7 @@
   {% for c in article.comments.all %}
     {% if c.is_moderated %}
       <div class="border rounded p-2 mb-2">
-        <p><strong>{{ c.name or c.author }}</strong> <small class="text-muted">{{ c.created_at }}</small></p>
+        <p><strong>{{ c.name|default_if_none:c.author }}</strong> <small class="text-muted">{{ c.created_at }}</small></p>
         <p>{{ c.content|linebreaks }}</p>
       </div>
     {% endif %}

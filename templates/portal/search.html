@@ -1,0 +1,12 @@
+{% extends 'portal/base.html' %}
+{% block content %}
+  <h3>Результаты поиска для '{{ q }}'</h3>
+  {% for article in results %}
+    <div class="mb-3">
+      <h5><a href="{{ article.get_absolute_url }}">{{ article.title }}</a></h5>
+      <p>{{ article.excerpt|truncatechars:200 }}</p>
+    </div>
+  {% empty %}
+    <p>Ничего не найдено.</p>
+  {% endfor %}
+{% endblock %}

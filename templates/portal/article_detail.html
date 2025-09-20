@@ -1,0 +1,26 @@
+{% extends 'portal/base.html' %}
+{% block content %}
+<article>
+  <h1>{{ article.title }}</h1>
+  <p><small>Автор: {{ article.author }} | Опубликовано: {{ article.created_at }} | Просмотров: {{ article.views }}</small></p>
+  {% if article.cover %}
+    <img src="{{ article.cover.url }}" class="img-fluid" alt="">
+  {% endif %}
+  <div class="mt-3">{{ article.content|linebreaks }}</div>
+</article>
+
+<section class="mt-5">
+  <h4>Комментарии</h4>
+  {% for c in article.comments.all %}
+    {% if c.is_moderated %}
+      <div class="border rounded p-2 mb-2">
+        <p><strong>{{ c.name or c.author }}</strong> <small class="text-muted">{{ c.created_at }}</small></p>
+        <p>{{ c.content|linebreaks }}</p>
+      </div>
+    {% endif %}
+  {% empty %}
+    <p>Комментариев нет.</p>
+  {% endfor %}
+  <a class="btn btn-primary mt-3" href="{% url 'portal:add_comment' article.slug %}">Оставить комментарий</a>
+</section>
+{% endblock %}

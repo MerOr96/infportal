@@ -43,6 +43,12 @@ class Article(models.Model):
     def get_absolute_url(self):
         return reverse('portal:article_detail', args=[self.slug])
 
+    @property
+    def estimated_read_time(self):
+        """Return approximate reading time in minutes based on content length."""
+        words = len(self.content.split())
+        return max(1, round(words / 200))
+
 class Comment(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='comments')
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)

@@ -1,9 +1,45 @@
 {% extends 'portal/base.html' %}
+
+{% block page_title %}Оставить комментарий — {{ article.title }}{% endblock %}
+
+{% block hero %}
+  <section class="hero-banner py-5 text-center">
+    <div class="container">
+      <h1 class="fw-bold mb-3">Ваш отзыв к статье</h1>
+      <p class="text-muted mb-0">Расскажите, что вы думаете о материале «{{ article.title }}». Мы ценим аргументированную дискуссию.</p>
+    </div>
+  </section>
+{% endblock %}
+
 {% block content %}
-  <h3>Оставить комментарий к: {{ article.title }}</h3>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button class="btn btn-success" type="submit">Отправить</button>
-  </form>
+  <div class="row justify-content-center">
+    <div class="col-lg-6">
+      <div class="card shadow-sm">
+        <div class="card-body p-4 p-lg-5">
+          <h2 class="h4 mb-4">Форма комментария</h2>
+          <form method="post" novalidate>
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="mb-3">
+              <label class="form-label" for="id_name">Имя</label>
+              {{ form.name }}
+              {{ form.name.errors }}
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="id_email">Электронная почта</label>
+              {{ form.email }}
+              {{ form.email.errors }}
+              <div class="form-text">Мы не публикуем адрес электронной почты.</div>
+            </div>
+            <div class="mb-4">
+              <label class="form-label" for="id_content">Комментарий</label>
+              {{ form.content }}
+              {{ form.content.errors }}
+            </div>
+            <button class="btn btn-primary w-100" type="submit">Отправить комментарий</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}

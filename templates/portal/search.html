@@ -1,12 +1,63 @@
 {% extends 'portal/base.html' %}
-{% block content %}
-  <h3>Результаты поиска для '{{ q }}'</h3>
-  {% for article in results %}
-    <div class="mb-3">
-      <h5><a href="{{ article.get_absolute_url }}">{{ article.title }}</a></h5>
-      <p>{{ article.excerpt|truncatechars:200 }}</p>
+{% load static article_assets %}
+
+{% block page_title %}Результаты поиска — Информационный портал{% endblock %}
+
+{% block hero %}
+  <section class="hero-banner py-5 text-center">
+    <div class="container">
+      <div class="d-inline-flex align-items-center justify-content-center gap-3 mb-3">
+        <div class="search-icon rounded-circle bg-primary-subtle text-primary d-flex align-items-center justify-content-center">
+          <i class="bi bi-search"></i>
+        </div>
+        <h1 class="fw-bold mb-0">Результаты поиска</h1>
+      </div>
+      <p class="text-muted mb-0">Запрос: «{{ q }}». Найдите материалы, которые помогут в работе и обучении.</p>
     </div>
-  {% empty %}
-    <p>Ничего не найдено.</p>
-  {% endfor %}
+  </section>
+{% endblock %}
+
+{% block content %}
+  {% if results %}
+    <div class="row row-cols-1 row-cols-lg-2 g-4">
+      {% for article in results %}
+        <div class="col">
+          <article class="article-card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
+            <div class="article-card__media position-relative">
+              {% if article.cover %}
+                <img src="{{ article.cover.url }}" class="img-fluid" alt="Обложка статьи {{ article.title }}">
+              {% else %}
+                <img src="{% static article|article_illustration %}" class="img-fluid" alt="Иллюстрация к статье {{ article.title }}">
+              {% endif %}
+              {% if article.category %}
+                <span class="article-card__badge badge bg-dark text-light">
+                  <i class="bi {{ article.category|category_icon }} me-1"></i>{{ article.category.name }}
+                </span>
+              {% endif %}
+            </div>
+            <div class="article-card__body p-4 d-flex flex-column">
+              <div class="article-card__meta small text-muted d-flex flex-wrap gap-3 mb-3">
+                <span class="d-inline-flex align-items-center gap-1"><i class="bi bi-calendar-event"></i>{{ article.created_at|date:"d E Y" }}</span>
+                <span class="d-inline-flex align-items-center gap-1"><i class="bi bi-stopwatch"></i>{{ article.estimated_read_time }} мин</span>
+              </div>
+              <h2 class="h5 mb-2"><a class="stretched-link text-decoration-none" href="{{ article.get_absolute_url }}">{{ article.title }}</a></h2>
+              <p class="text-muted mb-4 flex-grow-1">{{ article.excerpt|default:article.content|truncatechars:180 }}</p>
+              <div class="mt-auto d-flex flex-wrap gap-2 small">
+                {% for tag in article.tags.all %}
+                  <span class="badge bg-light text-secondary border">#{{ tag.name }}</span>
+                {% empty %}
+                  <span class="text-muted">Без тегов</span>
+                {% endfor %}
+              </div>
+            </div>
+          </article>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="text-center py-5">
+      <h2 class="h4 mb-3">Ничего не найдено</h2>
+      <p class="text-muted mb-0">Попробуйте изменить запрос или выбрать другую категорию материалов.</p>
+    </div>
+  {% endif %}
 {% endblock %}

@@ -1,35 +1,161 @@
 {% extends 'portal/base.html' %}
-{% block content %}
-<h1>Последние публикации</h1>
-<div class="row">
-  {% for article in articles %}
-    <div class="col-md-4">
-      <div class="card mb-3">
-        {% if article.cover %}
-          <img src="{{ article.cover.url }}" class="card-img-top" alt="">
-        {% endif %}
-        <div class="card-body">
-          <h5 class="card-title"><a href="{{ article.get_absolute_url }}">{{ article.title }}</a></h5>
-          <p class="card-text">{{ article.excerpt|default:article.content|truncatechars:150 }}</p>
-          <p class="card-text"><small class="text-muted">Опубликовано {{ article.created_at }}</small></p>
+{% load static article_assets %}
+
+{% block page_title %}Последние публикации — Информационный портал{% endblock %}
+
+{% block hero %}
+  {% with hero_article=articles|first %}
+    {% if hero_article %}
+      <section class="hero-banner py-5">
+        <div class="container">
+          <div class="hero-highlight position-relative overflow-hidden rounded-4 p-4 p-lg-5 d-flex flex-column flex-lg-row align-items-lg-center shadow-sm">
+            <div class="hero-highlight__content flex-grow-1 pe-lg-5">
+              <span class="badge rounded-pill bg-primary-subtle text-primary d-inline-flex align-items-center gap-2 mb-3">
+                <i class="bi bi-stars"></i>
+                Главная тема
+              </span>
+              <h1 class="display-5 fw-bold mb-3">{{ hero_article.title }}</h1>
+              <p class="lead text-muted mb-4">{{ hero_article.excerpt|default:hero_article.content|truncatechars:220 }}</p>
+              <div class="d-flex flex-wrap gap-3 align-items-center text-muted small mb-4">
+                <span class="d-inline-flex align-items-center gap-1"><i class="bi bi-calendar-event"></i>{{ hero_article.created_at|date:"d E Y" }}</span>
+                <span class="d-inline-flex align-items-center gap-1"><i class="bi bi-stopwatch"></i>{{ hero_article.estimated_read_time }} мин чтения</span>
+                {% if hero_article.views %}
+                  <span class="d-inline-flex align-items-center gap-1"><i class="bi bi-bar-chart"></i>{{ hero_article.views }} просмотров</span>
+                {% endif %}
+                {% if hero_article.category %}
+                  <span class="d-inline-flex align-items-center gap-1"><i class="bi {{ hero_article.category|category_icon }}"></i>{{ hero_article.category.name }}</span>
+                {% endif %}
+              </div>
+              <a class="btn btn-lg btn-primary shadow-sm" href="{{ hero_article.get_absolute_url }}">
+                Читать материал
+                <i class="bi bi-arrow-right-short ms-1"></i>
+              </a>
+            </div>
+            <div class="hero-highlight__media mt-4 mt-lg-0">
+              <div class="hero-illustration rounded-4 overflow-hidden">
+                {% if hero_article.cover %}
+                  <img src="{{ hero_article.cover.url }}" class="img-fluid" alt="Обложка статьи {{ hero_article.title }}">
+                {% else %}
+                  <img src="{% static hero_article|article_illustration %}" class="img-fluid" alt="Иллюстрация к статье {{ hero_article.title }}">
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          <div class="row g-3 mt-4 hero-stats">
+            <div class="col-md-4">
+              <div class="stat-tile rounded-3 p-3 h-100">
+                <div class="d-flex align-items-center gap-2">
+                  <div class="stat-icon bg-primary-subtle text-primary">
+                    <i class="bi bi-journal-richtext"></i>
+                  </div>
+                  <div>
+                    <div class="fw-semibold small text-uppercase text-muted">Кратко</div>
+                    <div class="fw-semibold">{{ hero_article.tags.all|length }} тег(ов)</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="stat-tile rounded-3 p-3 h-100">
+                <div class="d-flex align-items-center gap-2">
+                  <div class="stat-icon bg-warning-subtle text-warning">
+                    <i class="bi bi-emoji-smile"></i>
+                  </div>
+                  <div>
+                    <div class="fw-semibold small text-uppercase text-muted">Читатели</div>
+                    <div class="fw-semibold">{{ hero_article.views }} просмотров</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="stat-tile rounded-3 p-3 h-100">
+                <div class="d-flex align-items-center gap-2">
+                  <div class="stat-icon bg-success-subtle text-success">
+                    <i class="bi bi-clock-history"></i>
+                  </div>
+                  <div>
+                    <div class="fw-semibold small text-uppercase text-muted">Время чтения</div>
+                    <div class="fw-semibold">~{{ hero_article.estimated_read_time }} мин</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+      </section>
+    {% else %}
+      <section class="hero-banner py-5 text-center">
+        <div class="container">
+          <h1 class="display-5 fw-bold mb-3">Информационный портал</h1>
+          <p class="lead text-muted">Мы готовим аналитические статьи и практические советы о технологиях, образовании и развитии карьеры.</p>
+        </div>
+      </section>
+    {% endif %}
+  {% endwith %}
+{% endblock %}
+
+{% block content %}
+  {% with other_articles=articles|slice:"1:" %}
+    {% if other_articles %}
+      <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+        {% for article in other_articles %}
+          <div class="col">
+            <article class="article-card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
+              <div class="article-card__media position-relative">
+                {% if article.cover %}
+                  <img src="{{ article.cover.url }}" class="img-fluid" alt="Обложка статьи {{ article.title }}">
+                {% else %}
+                  <img src="{% static article|article_illustration %}" class="img-fluid" alt="Иллюстрация к статье {{ article.title }}">
+                {% endif %}
+                {% if article.category %}
+                  <span class="article-card__badge badge bg-dark text-light">
+                    <i class="bi {{ article.category|category_icon }} me-1"></i>{{ article.category.name }}
+                  </span>
+                {% endif %}
+              </div>
+              <div class="article-card__body p-4 d-flex flex-column">
+                <div class="article-card__meta small text-muted d-flex flex-wrap gap-3 mb-3">
+                  <span class="d-inline-flex align-items-center gap-1"><i class="bi bi-calendar-event"></i>{{ article.created_at|date:"d E Y" }}</span>
+                  <span class="d-inline-flex align-items-center gap-1"><i class="bi bi-stopwatch"></i>{{ article.estimated_read_time }} мин</span>
+                </div>
+                <h2 class="h5 mb-2"><a class="stretched-link text-decoration-none" href="{{ article.get_absolute_url }}">{{ article.title }}</a></h2>
+                <p class="text-muted mb-4 flex-grow-1">{{ article.excerpt|default:article.content|truncatechars:160 }}</p>
+                <div class="mt-auto d-flex flex-wrap gap-2 small">
+                  {% for tag in article.tags.all %}
+                    <span class="badge bg-light text-secondary border">#{{ tag.name }}</span>
+                  {% empty %}
+                    <span class="text-muted">Без тегов</span>
+                  {% endfor %}
+                </div>
+              </div>
+            </article>
+          </div>
+        {% endfor %}
       </div>
-    </div>
-  {% empty %}
-    <p>Публикаций пока нет.</p>
-  {% endfor %}
-</div>
-{% if is_paginated %}
-  <nav>
-    <ul class="pagination">
-      {% if page_obj.has_previous %}
-        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Prev</a></li>
-      {% endif %}
-      <li class="page-item disabled"><span class="page-link">Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span></li>
-      {% if page_obj.has_next %}
-        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
-      {% endif %}
-    </ul>
-  </nav>
-{% endif %}
+    {% else %}
+      <div class="text-center py-5">
+        <h3 class="fw-semibold mb-3">Публикаций пока нет</h3>
+        <p class="text-muted mb-0">Мы уже работаем над первыми материалами. Загляните чуть позже!</p>
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  {% if is_paginated %}
+    <nav class="mt-5" aria-label="Пагинация материалов">
+      <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+          <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Предыдущая</a></li>
+        {% else %}
+          <li class="page-item disabled"><span class="page-link">Предыдущая</span></li>
+        {% endif %}
+        <li class="page-item disabled"><span class="page-link">Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span></li>
+        {% if page_obj.has_next %}
+          <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Следующая</a></li>
+        {% else %}
+          <li class="page-item disabled"><span class="page-link">Следующая</span></li>
+        {% endif %}
+      </ul>
+    </nav>
+  {% endif %}
 {% endblock %}

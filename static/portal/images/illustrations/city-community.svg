@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 240">
+  <defs>
+    <linearGradient id="cityGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff9a9e" />
+      <stop offset="100%" stop-color="#fad0c4" />
+    </linearGradient>
+  </defs>
+  <rect width="360" height="240" rx="28" fill="url(#cityGradient)" />
+  <g transform="translate(55 60)">
+    <rect x="0" y="50" width="60" height="70" rx="12" fill="#ffffff" opacity="0.8" />
+    <rect x="70" width="80" height="120" rx="16" fill="#ffffff" opacity="0.9" />
+    <rect x="160" y="30" width="60" height="90" rx="14" fill="#ffffff" opacity="0.85" />
+    <rect x="230" y="20" width="45" height="100" rx="14" fill="#ffffff" opacity="0.6" />
+    <g fill="#ff9a9e" opacity="0.6">
+      <rect x="16" y="70" width="12" height="18" rx="4" />
+      <rect x="32" y="70" width="12" height="18" rx="4" />
+      <rect x="16" y="94" width="12" height="18" rx="4" />
+      <rect x="32" y="94" width="12" height="18" rx="4" />
+      <rect x="86" y="20" width="18" height="18" rx="5" />
+      <rect x="112" y="20" width="18" height="18" rx="5" />
+      <rect x="86" y="46" width="18" height="18" rx="5" />
+      <rect x="112" y="46" width="18" height="18" rx="5" />
+      <rect x="86" y="72" width="18" height="18" rx="5" />
+      <rect x="112" y="72" width="18" height="18" rx="5" />
+      <rect x="176" y="48" width="20" height="22" rx="6" />
+      <rect x="204" y="48" width="20" height="22" rx="6" />
+      <rect x="176" y="78" width="20" height="22" rx="6" />
+      <rect x="204" y="78" width="20" height="22" rx="6" />
+    </g>
+    <path d="M20 132h230" stroke="#ff9a9e" stroke-width="6" stroke-linecap="round" opacity="0.6" />
+  </g>
+  <g fill="#fff" fill-opacity="0.6">
+    <circle cx="90" cy="190" r="6" />
+    <circle cx="280" cy="60" r="8" />
+    <circle cx="300" cy="190" r="9" />
+  </g>
+</svg>

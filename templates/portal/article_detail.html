@@ -1,11 +1,14 @@
 {% extends 'portal/base.html' %}
+
 {% load static article_assets %}
+
 
 {% block page_title %}{{ article.title }} — Информационный портал{% endblock %}
 
 {% block hero %}
   <section class="article-hero py-5">
     <div class="container">
+
       <div class="article-hero__inner position-relative overflow-hidden rounded-4 shadow-sm">
         <div class="article-hero__media">
           {% if article.cover %}
@@ -25,6 +28,15 @@
           <h1 class="display-5 fw-bold mb-4">{{ article.title }}</h1>
           <div class="d-flex flex-wrap gap-3 align-items-center text-white-50">
             <span class="d-inline-flex align-items-center gap-2"><i class="bi bi-person-circle"></i>
+
+      <div class="row justify-content-center">
+        <div class="col-lg-10">
+          <span class="badge rounded-pill bg-primary-subtle text-primary mb-3">{{ article.category.name|default:'Материал' }}</span>
+          <h1 class="display-5 fw-bold mb-4">{{ article.title }}</h1>
+          <div class="d-flex flex-wrap gap-3 align-items-center text-muted">
+            <span>
+              Автор:
+
               {% if article.author %}
                 {% with full_name=article.author.get_full_name %}
                   {{ full_name|default:article.author.username }}
@@ -33,9 +45,18 @@
                 Редакция портала
               {% endif %}
             </span>
+
             <span class="d-inline-flex align-items-center gap-2"><i class="bi bi-calendar-event"></i>{{ article.created_at|date:"d E Y" }}</span>
             <span class="d-inline-flex align-items-center gap-2"><i class="bi bi-stopwatch"></i>{{ article.estimated_read_time }} мин чтения</span>
             <span class="d-inline-flex align-items-center gap-2"><i class="bi bi-eye"></i>{{ article.views }} просмотров</span>
+
+            <span>·</span>
+            <span>{{ article.created_at|date:"d E Y" }}</span>
+            <span>·</span>
+            <span>{{ article.estimated_read_time }} мин чтения</span>
+            <span>·</span>
+            <span>Просмотров: {{ article.views }}</span>
+
           </div>
         </div>
       </div>
@@ -46,6 +67,7 @@
 {% block content %}
   <div class="row justify-content-center">
     <div class="col-lg-8">
+
       <article class="article-body card shadow-sm border-0 rounded-4">
         <div class="card-body p-4 p-lg-5">
           {% if article.excerpt %}
@@ -53,6 +75,12 @@
               <i class="bi bi-lightbulb"></i>
               <div>{{ article.excerpt }}</div>
             </div>
+
+      <article class="article-body card shadow-sm">
+        <div class="card-body p-4 p-lg-5">
+          {% if article.cover %}
+            <img src="{{ article.cover.url }}" class="img-fluid rounded mb-4" alt="Обложка статьи {{ article.title }}">
+
           {% endif %}
           <div class="article-content">{{ article.content|linebreaks }}</div>
           <div class="d-flex flex-wrap gap-2 mt-4">
@@ -62,6 +90,7 @@
               <span class="text-muted">Теги не указаны</span>
             {% endfor %}
           </div>
+
           <div class="share-box mt-4 p-4 rounded-4">
             <h3 class="h6 fw-semibold mb-2">Понравилась статья?</h3>
             <p class="text-muted small mb-3">Расскажите коллегам: нажмите для быстрого шаринга или скопируйте прямую ссылку.</p>
@@ -78,6 +107,15 @@
                 <i class="bi bi-vk"></i>
                 VK
               </a>
+
+          <div class="share-box mt-4 p-4 rounded">
+            <h3 class="h6 fw-semibold mb-2">Понравилась статья?</h3>
+            <p class="text-muted small mb-3">Расскажите коллегам: скопируйте ссылку или поделитесь в соцсетях.</p>
+            <div class="d-flex flex-wrap gap-2">
+              <button class="btn btn-outline-primary btn-sm" type="button" data-copy>{{ request.build_absolute_uri }}</button>
+              <a class="btn btn-outline-secondary btn-sm" target="_blank" rel="noopener" href="https://t.me/share/url?url={{ request.build_absolute_uri|urlencode }}&text={{ article.title|urlencode }}">Telegram</a>
+              <a class="btn btn-outline-secondary btn-sm" target="_blank" rel="noopener" href="https://vk.com/share.php?url={{ request.build_absolute_uri|urlencode }}">VK</a>
+
             </div>
           </div>
         </div>
@@ -90,6 +128,7 @@
         </div>
         {% for c in article.comments.all %}
           {% if c.is_moderated %}
+
             <div class="comment-card border rounded-4 p-3 p-md-4 mb-3">
               <div class="d-flex justify-content-between flex-wrap gap-2 mb-2">
                 <div class="d-inline-flex align-items-center gap-2 fw-semibold">
@@ -97,6 +136,12 @@
                   {% firstof c.name c.author.get_full_name c.author.username 'Гость' %}
                 </div>
                 <small class="text-muted d-inline-flex align-items-center gap-1"><i class="bi bi-clock"></i>{{ c.created_at|date:"d E Y H:i" }}</small>
+
+            <div class="comment-card border rounded-3 p-3 p-md-4 mb-3">
+              <div class="d-flex justify-content-between flex-wrap gap-2 mb-2">
+                <div class="fw-semibold">{% firstof c.name c.author.get_full_name c.author.username 'Гость' %}</div>
+                <small class="text-muted">{{ c.created_at|date:"d E Y H:i" }}</small>
+
               </div>
               <div class="text-muted">{{ c.content|linebreaks }}</div>
             </div>
@@ -116,6 +161,7 @@
               <ul class="list-unstyled mb-0">
                 {% for related in related_articles %}
                   <li class="mb-3">
+
                     <a class="related-link d-flex align-items-center gap-3 text-decoration-none" href="{{ related.get_absolute_url }}">
                       <div class="related-thumb flex-shrink-0 rounded-3 overflow-hidden">
                         {% if related.cover %}
@@ -132,6 +178,10 @@
                         </div>
                       </div>
                     </a>
+
+                    <a class="text-decoration-none" href="{{ related.get_absolute_url }}">{{ related.title }}</a>
+                    <div class="text-muted small">{{ related.created_at|date:"d E" }} · {{ related.estimated_read_time }} мин</div>
+
                   </li>
                 {% endfor %}
               </ul>
@@ -154,6 +204,7 @@
   {{ block.super }}
   <script>
     document.addEventListener('click', function (event) {
+
       const button = event.target.closest('[data-copy]');
       if (button) {
         const link = button.getAttribute('data-link');
@@ -163,6 +214,13 @@
         button.innerHTML = '<i class="bi bi-check2-circle"></i><span>Ссылка скопирована</span>';
         setTimeout(function () {
           button.innerHTML = original;
+
+      if (event.target.matches('[data-copy]')) {
+        navigator.clipboard.writeText(event.target.textContent.trim());
+        event.target.textContent = 'Ссылка скопирована';
+        setTimeout(function () {
+          event.target.textContent = '{{ request.build_absolute_uri }}';
+
         }, 2500);
       }
     });

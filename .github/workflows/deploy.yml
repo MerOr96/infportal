@@ -20,7 +20,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Запуск тестов
-        run: python infportal/manage.py test
+        run: python manage.py test
 
   deploy:
     needs: test

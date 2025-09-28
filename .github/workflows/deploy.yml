@@ -2,7 +2,7 @@ name: Django CI/CD
 
 on:
   push:
-    branches: [ "main" ]   # ветка, при пуше в которую запускается pipeline
+    branches: [ "main" ]
 
 jobs:
   test:

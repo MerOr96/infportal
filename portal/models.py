@@ -2,8 +2,31 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django.urls import reverse
+from django.utils.text import slugify
+from django.utils.safestring import mark_safe
 
 User = get_user_model()
+
+# Try to import markdown and bleach
+try:
+    import markdown
+    import bleach
+    MARKDOWN_AVAILABLE = True
+    # Allowed HTML tags for markdown content
+    ALLOWED_TAGS = ['p', 'br', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 
+                    'ul', 'ol', 'li', 'strong', 'em', 'b', 'i', 'code', 'pre', 
+                    'blockquote', 'a', 'img', 'table', 'thead', 'tbody', 'tr', 'th', 'td']
+    ALLOWED_ATTRIBUTES = {
+        'a': ['href', 'title', 'target'],
+        'img': ['src', 'alt', 'title', 'width', 'height'],
+        'table': ['class'],
+        'th': ['scope'],
+        'td': ['colspan', 'rowspan'],
+    }
+except ImportError:
+    MARKDOWN_AVAILABLE = False
+    ALLOWED_TAGS = []
+    ALLOWED_ATTRIBUTES = {}
 
 class Category(models.Model):
     name = models.CharField(max_length=120, unique=True)
@@ -48,6 +71,22 @@ class Article(models.Model):
         """Return approximate reading time in minutes based on content length."""
         words = len(self.content.split())
         return max(1, round(words / 200))
+    
+    def get_content_html(self):
+        """Convert markdown content to HTML with sanitization."""
+        if MARKDOWN_AVAILABLE:
+            html = markdown.markdown(self.content, extensions=['fenced_code', 'tables', 'nl2br'])
+            cleaned_html = bleach.clean(html, tags=ALLOWED_TAGS, attributes=ALLOWED_ATTRIBUTES)
+            return mark_safe(cleaned_html)
+        else:
+            # Fallback to plain text with line breaks if markdown is not available
+            return mark_safe(self.content.replace('\n', '<br>'))
+    
+    def save(self, *args, **kwargs):
+        # Auto-generate excerpt if not provided
+        if not self.excerpt and self.content:
+            self.excerpt = self.content[:200] + '...' if len(self.content) > 200 else self.content
+        super().save(*args, **kwargs)
 
 class Comment(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='comments')

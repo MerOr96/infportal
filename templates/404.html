@@ -1,0 +1,19 @@
+{% extends 'portal/base.html' %}
+{% load static %}
+
+{% block page_title %}Страница не найдена — 404{% endblock %}
+
+{% block content %}
+<div class="text-center py-5">
+  <div class="mb-4">
+    <h1 class="display-1 fw-bold text-muted">404</h1>
+    <h2 class="h3 mb-3">Страница не найдена</h2>
+    <p class="text-muted mb-4">К сожалению, запрашиваемая страница не существует или была перемещена.</p>
+    <div class="d-flex gap-3 justify-content-center flex-wrap">
+      <a href="{% url 'portal:article_list' %}" class="btn btn-primary">На главную</a>
+      <a href="{% url 'portal:search' %}" class="btn btn-outline-primary">Поиск статей</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

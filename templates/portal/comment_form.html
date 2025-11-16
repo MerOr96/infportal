@@ -21,22 +21,28 @@
             {% csrf_token %}
             {{ form.non_field_errors }}
             <div class="mb-3">
-              <label class="form-label" for="id_name">Имя</label>
+              <label class="form-label" for="id_name">Имя <span class="text-danger">*</span></label>
               {{ form.name }}
               {{ form.name.errors }}
             </div>
             <div class="mb-3">
-              <label class="form-label" for="id_email">Электронная почта</label>
+              <label class="form-label" for="id_email">Электронная почта <span class="text-danger">*</span></label>
               {{ form.email }}
               {{ form.email.errors }}
               <div class="form-text">Мы не публикуем адрес электронной почты.</div>
             </div>
             <div class="mb-4">
-              <label class="form-label" for="id_content">Комментарий</label>
+              <label class="form-label" for="id_content">Комментарий <span class="text-danger">*</span></label>
               {{ form.content }}
               {{ form.content.errors }}
+              <div class="form-text">Минимум 10 символов, максимум 2000 символов.</div>
             </div>
+            {# Honeypot field - hidden from users #}
+            {{ form.website }}
             <button class="btn btn-primary w-100" type="submit">Отправить комментарий</button>
+            {% if not user.is_authenticated %}
+              <p class="text-muted small mt-3 mb-0">Комментарии от анонимных пользователей требуют модерации.</p>
+            {% endif %}
           </form>
         </div>
       </div>

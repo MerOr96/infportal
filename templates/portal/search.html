@@ -39,4 +39,34 @@
       <p class="text-muted mb-0">Попробуйте изменить запрос или выбрать другую категорию материалов.</p>
     </div>
   {% endif %}
+  
+  {% if page_obj.has_other_pages %}
+    <nav class="mt-5" aria-label="Пагинация результатов поиска">
+      <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?q={{ q|urlencode }}&page={{ page_obj.previous_page_number }}">Предыдущая</a>
+          </li>
+        {% else %}
+          <li class="page-item disabled">
+            <span class="page-link">Предыдущая</span>
+          </li>
+        {% endif %}
+        
+        <li class="page-item disabled">
+          <span class="page-link">Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+        </li>
+        
+        {% if page_obj.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?q={{ q|urlencode }}&page={{ page_obj.next_page_number }}">Следующая</a>
+          </li>
+        {% else %}
+          <li class="page-item disabled">
+            <span class="page-link">Следующая</span>
+          </li>
+        {% endif %}
+      </ul>
+    </nav>
+  {% endif %}
 {% endblock %}

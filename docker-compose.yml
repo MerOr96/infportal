@@ -2,13 +2,13 @@ version: "3.9"
 
 services:
   web:
-    build: .                       # собираем образ из текущей папки
+    build: .                       # �������� ����� �� ������� �����
     restart: unless-stopped
     ports:
       - "8000:8000"
     environment:
       DJANGO_SETTINGS_MODULE: infportal.settings
-     
+      
     volumes:
       - static_volume:/app/static  # сохраняем статику вне контейнера
       - media_volume:/app/media    # если есть медиа

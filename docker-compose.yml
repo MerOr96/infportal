@@ -1,10 +1,9 @@
-# docker-compose.yml
 services:
   web:
-    image: ghcr.io/OWNER/REPO:latest   # замените на ваш OWNER/REPO на GitHub
+    image: ghcr.io/meror96/infportal:latest   
     restart: unless-stopped
     ports:
       - "8000:8000"
     environment:
       DJANGO_SETTINGS_MODULE: infportal.settings
-      # SECRET_KEY, DEBUG, DATABASE_URL — по желанию, через переменные окружения/Secrets
+      # SECRET_KEY, DEBUG, DATABASE_URL вЂ” Р»СѓС‡С€Рµ С‡РµСЂРµР· GitHub Secrets

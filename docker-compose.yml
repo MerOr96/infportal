@@ -1,9 +1,18 @@
+version: "3.9"
+
 services:
   web:
-    image: ghcr.io/meror96/infportal:latest   
+    build: .                       # собираем образ из текущей папки
     restart: unless-stopped
     ports:
       - "8000:8000"
     environment:
       DJANGO_SETTINGS_MODULE: infportal.settings
-      # SECRET_KEY, DEBUG, DATABASE_URL — лучше через GitHub Secrets
+     
+    volumes:
+      - static_volume:/app/static  # сохраняем статику вне контейнера
+      - media_volume:/app/media    # если есть медиа
+
+volumes:
+  static_volume:
+  media_volume:
